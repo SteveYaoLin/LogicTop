@@ -13,7 +13,8 @@ module tb_pulsecatch();
   wire io_fb_catch;
   reg [_RAM_WIDTH - 1:0] io_filterCnt;
   reg io_defaultLevel;
-
+  //
+  
   // 实例化DUT
   PulseCatch #(
     ._RAM_WIDTH(_RAM_WIDTH)
@@ -31,6 +32,9 @@ module tb_pulsecatch();
     io_clk = 0;
     forever #50 io_clk = ~io_clk; // 生成100MHz的时钟信号
   end
+  // always @(posedge io_clk) begin
+  //   io_fb_in <= pwm_out;
+  // end
 
   // 测试序列
   initial begin
@@ -46,9 +50,11 @@ module tb_pulsecatch();
     // 设置PWM信号参数
     io_defaultLevel = 1'b0; // 假设默认电平为低
     io_filterCnt = PWM_PULSE_WIDTH / 1000; // 根据宏定义设置滤波计数
-
+    #10000;
+    $display("ready!");
     // 模拟PWM信号
-    generate_pwm ;//# (10000); // 产生1us宽的PWM信号
+    //reg pwm_out;
+    generate_pwm  (10000); // 产生1us宽的PWM信号
 
     // 检查io_fb_catch是否正确
     // ...
@@ -60,14 +66,14 @@ module tb_pulsecatch();
 
   // 生成PWM信号的函数
   task generate_pwm ;
-    // input io_defaultLevel;
-    parameter   period = PWM_PULSE_WIDTH;
-    // parameter   io_defaultLevel;
-
+    //input io_defaultLevel;
+    input  [_RAM_WIDTH-1 :0] period;
+    // output pwm_out;
     begin
-      io_fb_in = io_defaultLevel;
-      #(period/2); // 保持一段时间
       io_fb_in = ~io_defaultLevel;
+      #(period/2); // 保持一段时间
+      $display("pwm!");
+      io_fb_in = io_defaultLevel;
       #(period/2);
     end
   endtask
