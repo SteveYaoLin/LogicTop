@@ -54,7 +54,7 @@ module tb_pulsecatch();
     $display("ready!");
     // 模拟PWM信号
     //reg pwm_out;
-    generate_pwm  (10000); // 产生1us宽的PWM信号
+    generate_pwm  (10001); // 产生1us宽的PWM信号
 
     // 检查io_fb_catch是否正确
     // ...
@@ -72,7 +72,7 @@ module tb_pulsecatch();
     begin
       io_fb_in = ~io_defaultLevel;
       #(period/2); // 保持一段时间
-      $display("pwm!");
+      $display("pulus_access %t!",period/2);
       io_fb_in = io_defaultLevel;
       #(period/2);
     end
