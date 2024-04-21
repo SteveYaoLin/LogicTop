@@ -9,6 +9,7 @@ module tb_sigpulse();
   // 输入输出信号
   reg io_clk;
   reg io_rst;
+  reg pwm_dis;
   reg io_en;
   // wire io_pulseOut;
   reg [_RAM_WIDTH - 1:0] io_pulseWidth;
@@ -25,6 +26,7 @@ module tb_sigpulse();
     .io_clk(io_clk),
     .io_rst(io_rst),
     .io_en(io_en & ~en_d1),
+    .pwm_dis(pwm_dis),
     .io_pulseOut(io_pulseOut),
     .io_pulseWidth(io_pulseWidth),
     .io_defaultLevel(io_defaultLevel),
@@ -46,6 +48,7 @@ module tb_sigpulse();
     // 初始化信号
     io_rst = 1;
     io_en = 0;
+    pwm_dis =0;
     io_pulseWidth = 0;
     io_defaultLevel = 0;
     #20; // 等待几个时钟周期以稳定信号
@@ -54,7 +57,7 @@ module tb_sigpulse();
 
     // 设置PWM信号参数
     io_defaultLevel = 1'b1; // 假设默认电平为低
-    io_pulseWidth = PWM_PULSE_WIDTH / 100; // 根据宏定义设置滤波计数
+    io_pulseWidth = PWM_PULSE_WIDTH / 10; // 根据宏定义设置滤波计数
     #10000;
     $display("ready!");
     // 模拟PWM信号
@@ -66,8 +69,11 @@ module tb_sigpulse();
     // io_en = 1;
     // 检查io_pulseOut是否正确
     start_sigpulse;
-    #10000;
-    start_sigpulse;
+    #2030 pwm_dis =1;
+    #100 pwm_dis =0;
+    $display("%t 2st abort!",$realtime);
+    @(posedge pulse_valid)
+      #500 start_sigpulse;
     #1000;
     // ...
 

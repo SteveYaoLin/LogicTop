@@ -86,14 +86,25 @@ module tb_pulse;
         
         // Start finite pulse
         start_finite_pulse(10, 25, 15);
-        // if (pulse_valid) begin
-            @(posedge pulse_valid)
-                io_en = 1'b0;
-                #1000 start_finite_pulse(5, 25, 25);
-                $display("2st pwm");
-        // end
-        
 
+        @(posedge pulse_valid)
+            io_en = 1'b0;
+            #1000 start_finite_pulse(5, 25, 25);
+            $display("2st pwm");
+            #7500;
+            io_en = 1'b0;
+            $display("%t 2st abort!",$realtime);
+
+        @(posedge pulse_valid)
+            io_en = 1'b0;
+            #1000 start_finite_pulse(5, 20, 10);
+            $display("3st pwm");
+
+        @(posedge pulse_valid)
+            io_en = 1'b0;
+            #1000 start_continuous_pulse();
+        #100000;
+            io_en = 1'b0;
         // // Stop pulse
         // stop_pulse();
         // #20;
