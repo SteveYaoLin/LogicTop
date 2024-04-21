@@ -49,7 +49,7 @@ module tb_pulse;
         io_pulseWidth = pulse_width;
         io_unaccessWidth = unaccess_width;
         io_pusle_times = pulse_times;
-        #10; // Wait for the clock edge
+        #100; // Wait for the clock edge
     end
     endtask
 
@@ -66,7 +66,7 @@ module tb_pulse;
     begin
         io_en = 1'b1;
         io_pusle_times = 0; // Set to 0 for continuous pulse
-        #10; // Wait for the clock edge
+        #100; // Wait for the clock edge
     end
     endtask
 
@@ -81,20 +81,26 @@ module tb_pulse;
         io_pusle_times = 0;
 
         // Add stimulus here
-        #20; // Wait for global reset
+        #100; // Wait for global reset
         io_rst = 1'b0;
         
         // Start finite pulse
         start_finite_pulse(10, 25, 15);
-        #100;
+        // if (pulse_valid) begin
+            @(posedge pulse_valid)
+                io_en = 1'b0;
+                #1000 start_finite_pulse(5, 25, 25);
+                $display("2st pwm");
+        // end
         
+
         // // Stop pulse
         // stop_pulse();
         // #20;
         
         // // Start continuous pulse
         // start_continuous_pulse();
-        // #100;
+         #100;
         
         // Finish simulation
         //$finish;
